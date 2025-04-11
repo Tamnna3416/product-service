@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sarvika.demo.model.Product;
-import com.sarvika.demo.service.ProductService;
+import com.sarvika.demo.service.impl.ProductServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {

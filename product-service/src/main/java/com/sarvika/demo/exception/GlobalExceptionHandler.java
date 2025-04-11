@@ -4,35 +4,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        response.put("status", "error");
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(ProductNotFoundException.class)
+	public ResponseEntity<?> handleUserNotFoundException(ProductNotFoundException ex, WebRequest request) {
+		ErrorDetails errorDetails = new ErrorDetails("NOT_FOUND", ex.getMessage(), request.getDescription(false));
+		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+	}
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleProductNotFoundException(ProductNotFoundException e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        response.put("status", "error");
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(IllegalArgumentException e) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        response.put("status", "error");
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
+		ErrorDetails errorDetails = new ErrorDetails("INTERNAL_SERVER_ERROR", ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
 
